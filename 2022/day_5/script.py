@@ -1,27 +1,34 @@
+import itertools
 import re
 
-with open('crates.txt') as f:
-    lines = [line.strip() for line in f.readlines()]
+with open ('crates.txt') as f: 
+    lines = [line for line in f.readlines()]
 
-crates_dict = {
-    "1": ["G", "F", "V", "H", "P", "S"],
-    "2": ["G", "J", "F", "B", "V", "D", "Z", "M"],
-    "3": ["G", "M", "L", "J", "N"],
-    "4": ["N", "G", "Z", "V", "D", "W","P"],
-    "5": ["V", "R", "C", "B"],
-    "6": ["V", "R", "S", "M", "P", "W", "L", "Z"],
-    "7": ["T", "H", "P"],
-    "8": ["Q", "R", "S", "N", "C", "H", "Z", "V"],
-    "9": ["F", "L", "G", "P", "V", "Q", "J"]
-}
+move_lines = [line.strip() for line in lines[10:]]
+crate_lines = [item[:-1] for item in itertools.islice([line for line in lines], 8)]
 
-for i in range(10, len(lines)):
-    numbers = re.findall('[0-9]+', lines[i])
-    last_n_boxes = crates_dict[f"{numbers[1]}"][-int(numbers[0]):]
+crate_lines.reverse()
+
+x = 1
+crates_dict = {}
+mapping = {}
+for i in range(1,10):
+    crates_dict.update({i: []})
+    mapping.update({x:i})
+    x+=4
+
+for line in crate_lines:
+    for i, character in enumerate(line):
+        if character not in ' []':
+            crates_dict[mapping[i]].append(character)
+
+for i in range(len(move_lines)):
+    numbers = re.findall('[0-9]+', move_lines[i])
+    last_n_boxes = crates_dict[int(numbers[1])][-int(numbers[0]):]
     loop_length = len(last_n_boxes)
     for element in range(loop_length):
-        crates_dict[f"{numbers[2]}"].append(last_n_boxes.pop())
-    del crates_dict[f"{numbers[1]}"][len(crates_dict[f"{numbers[1]}"]) -int(numbers[0]):]
+        crates_dict[int(numbers[2])].append(last_n_boxes.pop())
+    del crates_dict[int(numbers[1])][len(crates_dict[int(numbers[1])]) -int(numbers[0]):]
 
 my_code = ""
 for key, value in crates_dict.items():
