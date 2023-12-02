@@ -10,17 +10,7 @@ for line in lines:
     else:
         calories += int(line)
 
-top_elf_calories = max(elf_calories)
+print(max(elf_calories))
 
-print(top_elf_calories)
-
-top_3_calories = top_elf_calories
-for i in range(2):
-    elf_calories.remove(top_elf_calories)
-    top_elf_calories = max(elf_calories)
-    top_3_calories += top_elf_calories
-
-
-print(top_3_calories)
-
-
+elf_calories.sort()
+print(sum(elf_calories[-3:]))
